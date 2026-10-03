@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Users,
   UserCheck,
@@ -225,17 +225,14 @@ const INITIAL_AUDIT_LOGS = [
 ];
 
 export default function App() {
-  // Navigation & Role Mode State
-  const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard', 'participants', 'admins', 'modules', 'qr-scanner', 'audit-logs'
-  const [viewMode, setViewMode] = useState('admin'); // 'admin' or 'participant'
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [viewMode, setViewMode] = useState('admin');
 
-  // Core Data Collections
   const [participants, setParticipants] = useState(INITIAL_PARTICIPANTS);
   const [admins, setAdmins] = useState(INITIAL_ADMINS);
   const [modules, setModules] = useState(INITIAL_MODULES);
   const [auditLogs, setAuditLogs] = useState(INITIAL_AUDIT_LOGS);
 
-  // Search & Filter States
   const [participantSearch, setParticipantSearch] = useState('');
   const [schoolFilter, setSchoolFilter] = useState('ALL');
   const [attendanceFilter, setAttendanceFilter] = useState('ALL');
@@ -249,7 +246,6 @@ export default function App() {
   const [logSearch, setLogSearch] = useState('');
   const [logCategoryFilter, setLogCategoryFilter] = useState('ALL');
 
-  // Modal Controls
   const [participantModal, setParticipantModal] = useState({ open: false, mode: 'add', data: null });
   const [adminModal, setAdminModal] = useState({ open: false, mode: 'add', data: null });
   const [moduleModal, setModuleModal] = useState({ open: false, mode: 'add', data: null });
@@ -257,10 +253,7 @@ export default function App() {
   const [qrCardModal, setQrCardModal] = useState({ open: false, participant: null });
   const [scoreModal, setScoreModal] = useState({ open: false, participant: null });
 
-  // Participant Portal Selected User
   const [portalParticipantId, setPortalParticipantId] = useState('PAR-801');
-
-  // Toasts system
   const [toasts, setToasts] = useState([]);
 
   const addToast = (title, message, type = 'success') => {
@@ -726,8 +719,6 @@ export default function App() {
         </div>
       )}
 
-      {}
-
       {/* Participant Form Modal */}
       {participantModal.open && (
         <ParticipantFormModal
@@ -837,7 +828,6 @@ function ParticipantPortalView({ participants, modules, portalParticipantId, set
 
   return (
     <div className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Switcher Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-950 p-4 rounded-2xl border border-slate-800">
         <div>
           <h2 className="text-lg font-bold text-white flex items-center gap-2">
@@ -862,9 +852,7 @@ function ParticipantPortalView({ participants, modules, portalParticipantId, set
         </div>
       </div>
 
-      {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Pass Card Preview */}
         <div className="bg-gradient-to-b from-slate-900 to-slate-950 rounded-2xl border border-slate-800 p-6 flex flex-col items-center text-center space-y-4 relative overflow-hidden shadow-2xl">
           <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
 
@@ -903,7 +891,6 @@ function ParticipantPortalView({ participants, modules, portalParticipantId, set
           </div>
         </div>
 
-        {/* Modules & Schedule */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
@@ -964,7 +951,6 @@ function DashboardTab({ participants, admins, modules, auditLogs, setActiveTab, 
 
   return (
     <div className="space-y-6">
-      {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-slate-950 p-5 rounded-2xl border border-slate-800 flex items-center justify-between">
           <div>
@@ -1013,9 +999,7 @@ function DashboardTab({ participants, admins, modules, auditLogs, setActiveTab, 
         </div>
       </div>
 
-      {/* Action Bar & Quick Streams */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Quick Management */}
         <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
           <h3 className="font-bold text-white text-sm flex items-center gap-2">
             <Zap className="w-4 h-4 text-indigo-400" /> Quick Operations
@@ -1052,7 +1036,6 @@ function DashboardTab({ participants, admins, modules, auditLogs, setActiveTab, 
           </div>
         </div>
 
-        {/* Audit Log Stream Ticker */}
         <div className="lg:col-span-2 bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-4">
           <div className="flex justify-between items-center">
             <h3 className="font-bold text-white text-sm flex items-center gap-2">
@@ -1106,7 +1089,6 @@ function ParticipantsTab({
 }) {
   return (
     <div className="space-y-4">
-      {/* Filters & Actions Header */}
       <div className="flex flex-col md:flex-row gap-3 justify-between items-start md:items-center bg-slate-950 p-4 rounded-2xl border border-slate-800">
         <div className="relative w-full md:w-80">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -1153,7 +1135,6 @@ function ParticipantsTab({
         </div>
       </div>
 
-      {/* Participants Data Table */}
       <div className="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
@@ -1353,7 +1334,7 @@ function ModulesTab({ modules, search, setSearch, statusFilter, setStatusFilter,
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search module code, name, venue..."
+            placeholder="Search modules by code, name, venue..."
             className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white outline-none focus:border-indigo-500"
           />
         </div>
@@ -1367,6 +1348,7 @@ function ModulesTab({ modules, search, setSearch, statusFilter, setStatusFilter,
             <option value="ALL">All Statuses</option>
             <option value="Active">Active</option>
             <option value="Upcoming">Upcoming</option>
+            <option value="Completed">Completed</option>
           </select>
 
           <button
@@ -1380,54 +1362,55 @@ function ModulesTab({ modules, search, setSearch, statusFilter, setStatusFilter,
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {modules.map((mod) => {
-          const enrolledCount = participants.filter((p) => p.enrolledModules?.includes(mod.code)).length;
+          const count = participants.filter((p) => p.enrolledModules?.includes(mod.code)).length;
           return (
-            <div key={mod.id} className="bg-slate-950 p-5 rounded-2xl border border-slate-800 space-y-3">
-              <div className="flex justify-between items-start">
-                <div>
-                  <span className="text-xs font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-0.5 rounded-lg border border-indigo-500/20">
+            <div key={mod.id} className="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between space-y-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="px-2.5 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 rounded-lg text-xs font-bold font-mono">
                     {mod.code}
                   </span>
-                  <h4 className="font-bold text-white text-base mt-2">{mod.name}</h4>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${mod.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>
+                    {mod.status}
+                  </span>
                 </div>
-                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${mod.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}`}>
-                  {mod.status}
-                </span>
+
+                <h3 className="font-bold text-white text-base">{mod.name}</h3>
+                <p className="text-xs text-slate-400 leading-relaxed">{mod.description}</p>
               </div>
 
-              <p className="text-xs text-slate-400 leading-relaxed">{mod.description}</p>
-
-              <div className="grid grid-cols-2 gap-2 text-xs pt-2 border-t border-slate-900 text-slate-400">
-                <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-slate-500" /> {mod.venue}</span>
-                <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-slate-500" /> {mod.schedule}</span>
-                <span className="flex items-center gap-1.5"><User className="w-3.5 h-3.5 text-slate-500" /> {mod.coordinator}</span>
-                <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5 text-indigo-400" /> {enrolledCount} Enrolled</span>
+              <div className="space-y-2 pt-2 border-t border-slate-900 text-xs text-slate-400">
+                <div className="flex items-center justify-between">
+                  <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-slate-500" /> {mod.venue}</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-slate-500" /> {mod.schedule}</span>
+                </div>
+                <div className="flex items-center justify-between pt-1">
+                  <span>Coordinator: <strong className="text-slate-200">{mod.coordinator}</strong></span>
+                  <span className="text-indigo-300 font-medium">{count} Enrolled</span>
+                </div>
               </div>
 
-              <div className="flex items-center justify-between pt-3 border-t border-slate-900">
-                <span className="text-xs text-amber-400 font-medium">Max Score: {mod.maxPoints} pts</span>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setModuleModal({ open: true, mode: 'edit', data: mod })}
-                    className="p-1.5 bg-slate-900 hover:bg-slate-800 text-indigo-300 rounded-lg border border-slate-800"
-                  >
-                    <Edit className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={() =>
-                      setDeleteConfirm({
-                        open: true,
-                        type: 'module',
-                        id: mod.id,
-                        name: mod.name,
-                        warningMsg: `Unenrolls ${enrolledCount} assigned participants.`
-                      })
-                    }
-                    className="p-1.5 bg-slate-900 hover:bg-slate-800 text-rose-400 rounded-lg border border-slate-800"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+              <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-900">
+                <button
+                  onClick={() => setModuleModal({ open: true, mode: 'edit', data: mod })}
+                  className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-indigo-300 rounded-xl text-xs font-semibold border border-slate-800 flex items-center gap-1"
+                >
+                  <Edit className="w-3.5 h-3.5" /> Edit
+                </button>
+                <button
+                  onClick={() =>
+                    setDeleteConfirm({
+                      open: true,
+                      type: 'module',
+                      id: mod.id,
+                      name: mod.name,
+                      warningMsg: 'Permanently deletes module and removes participant enrollments.'
+                    })
+                  }
+                  className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-rose-400 rounded-xl text-xs font-semibold border border-slate-800 flex items-center gap-1"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Delete
+                </button>
               </div>
             </div>
           );
@@ -1438,129 +1421,180 @@ function ModulesTab({ modules, search, setSearch, statusFilter, setStatusFilter,
 }
 
 function QRScannerTab({ participants, handleToggleAttendance, handleUpdatePoints, modules }) {
-  const [scanInput, setScanInput] = useState('');
-  const [scannedParticipant, setScannedParticipant] = useState(null);
-  const [pointsInput, setPointsInput] = useState(10);
-  const [selectedModuleCode, setSelectedModuleCode] = useState(modules[0]?.code || '');
+  const [scanCode, setScanCode] = useState('');
+  const [lastScanned, setLastScanned] = useState(null);
+  const [isScanning, setIsScanning] = useState(true);
+  const [selectedModuleCode, setSelectedModuleCode] = useState(modules[0]?.code || 'CS-101');
+  const videoRef = useRef(null);
+  const mediaStreamRef = useRef(null);
 
-  const handleSearchQR = (e) => {
-    e.preventDefault();
-    const found = participants.find(
-      (p) => p.qrCode.toLowerCase() === scanInput.trim().toLowerCase() || p.id.toLowerCase() === scanInput.trim().toLowerCase()
-    );
-    if (found) {
-      setScannedParticipant(found);
+  useEffect(() => {
+    if (isScanning) {
+      navigator.mediaDevices?.getUserMedia({ video: { facingMode: 'environment' } })
+        .then((stream) => {
+          mediaStreamRef.current = stream;
+          if (videoRef.current) videoRef.current.srcObject = stream;
+        })
+        .catch(() => {});
     } else {
-      alert('Participant with QR/ID code not found.');
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach((t) => t.stop());
+        mediaStreamRef.current = null;
+      }
     }
+    return () => {
+      if (mediaStreamRef.current) {
+        mediaStreamRef.current.getTracks().forEach((t) => t.stop());
+      }
+    };
+  }, [isScanning]);
+
+  const processCode = (code) => {
+    const query = code.trim().toLowerCase();
+    const found = participants.find(
+      (p) => p.qrCode.toLowerCase() === query || p.id.toLowerCase() === query
+    );
+
+    if (found) {
+      handleToggleAttendance(found.id, 'Present');
+      handleUpdatePoints(found.id, 10, `Check-in scanner verified (${selectedModuleCode})`);
+      setLastScanned({ success: true, participant: found, time: new Date().toLocaleTimeString() });
+    } else {
+      setLastScanned({ success: false, query, time: new Date().toLocaleTimeString() });
+    }
+    setScanCode('');
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 py-4">
-      <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 text-center space-y-4">
-        <div className="p-3 bg-emerald-500/10 text-emerald-400 w-12 h-12 rounded-2xl border border-emerald-500/20 mx-auto flex items-center justify-center">
-          <Camera className="w-6 h-6 animate-pulse" />
-        </div>
-        <div>
-          <h3 className="text-lg font-bold text-white">Live Scanner & Check-In Station</h3>
-          <p className="text-xs text-slate-400">Scan QR codes or enter ID manually to register check-in and award live points.</p>
-        </div>
-
-        <form onSubmit={handleSearchQR} className="flex gap-2 max-w-md mx-auto">
-          <input
-            type="text"
-            value={scanInput}
-            onChange={(e) => setScanInput(e.target.value)}
-            placeholder="Scan QR or enter pass code (e.g. EVT-2026-801)..."
-            className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-emerald-500"
-          />
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-6">
+        <div className="flex items-center justify-between">
+          <h3 className="text-base font-bold text-white flex items-center gap-2">
+            <Camera className="w-5 h-5 text-emerald-400" />
+            Live Camera Check-In Scanner
+          </h3>
           <button
-            type="submit"
-            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-emerald-600/30 transition-all"
+            onClick={() => setIsScanning(!isScanning)}
+            className={`px-3 py-1 rounded-xl text-xs font-semibold ${isScanning ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'}`}
           >
-            Scan Pass
+            {isScanning ? 'Stop Camera' : 'Start Camera'}
           </button>
-        </form>
+        </div>
 
-        <div className="flex items-center justify-center gap-2 pt-2 text-xs text-slate-500">
-          <span>Quick Test:</span>
-          {participants.slice(0, 3).map((p) => (
+        <div className="space-y-3">
+          <label className="text-xs font-medium text-slate-400">Target Competition Module for Check-in:</label>
+          <select
+            value={selectedModuleCode}
+            onChange={(e) => setSelectedModuleCode(e.target.value)}
+            className="w-full bg-slate-900 border border-slate-800 text-xs text-white rounded-xl px-3 py-2.5 outline-none focus:border-emerald-500"
+          >
+            {modules.map((m) => (
+              <option key={m.id} value={m.code}>
+                {m.code} - {m.name} ({m.venue})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="relative aspect-video bg-black rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
+          {isScanning ? (
+            <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+          ) : (
+            <div className="text-xs text-slate-500 flex flex-col items-center gap-2">
+              <Camera className="w-8 h-8 opacity-40" />
+              Camera stream paused
+            </div>
+          )}
+          <div className="absolute inset-0 border-2 border-dashed border-emerald-500/30 rounded-xl pointer-events-none flex items-center justify-center">
+            <div className="w-48 h-48 border-2 border-emerald-400 rounded-lg animate-pulse opacity-60"></div>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-slate-400">Or simulate manual barcode / QR code entry:</label>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={scanCode}
+              onChange={(e) => setScanCode(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && processCode(scanCode)}
+              placeholder="e.g. EVT-2026-801 or PAR-801"
+              className="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-emerald-500"
+            />
             <button
-              key={p.id}
-              onClick={() => {
-                setScanInput(p.qrCode);
-                setScannedParticipant(p);
-              }}
-              className="px-2 py-1 bg-slate-900 hover:bg-slate-800 rounded-lg text-indigo-400 border border-slate-800"
+              onClick={() => processCode(scanCode)}
+              className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-emerald-600/30 transition-all"
             >
-              {p.qrCode}
+              Verify Pass
             </button>
-          ))}
+          </div>
         </div>
       </div>
 
-      {scannedParticipant && (
-        <div className="bg-slate-950 p-6 rounded-2xl border border-emerald-500/40 shadow-2xl space-y-6">
-          <div className="flex items-start justify-between border-b border-slate-800 pb-4">
-            <div>
-              <span className="text-[10px] uppercase tracking-wider font-semibold text-emerald-400">Scan Match Confirmed</span>
-              <h3 className="text-xl font-bold text-white mt-0.5">{scannedParticipant.name}</h3>
-              <p className="text-xs text-slate-400">{scannedParticipant.school} • {scannedParticipant.team}</p>
-            </div>
-            <div className="text-right">
-              <span className="text-xs text-slate-400 block">Current Score</span>
-              <span className="text-2xl font-extrabold text-amber-400">{scannedParticipant.points} pts</span>
-            </div>
-          </div>
+      <div className="bg-slate-950 p-6 rounded-2xl border border-slate-800 space-y-6 flex flex-col justify-between">
+        <div className="space-y-4">
+          <h3 className="text-base font-bold text-white flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+            Verification Feed & Result
+          </h3>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {/* Quick Attendance Toggle */}
-            <div className="space-y-3">
-              <label className="text-xs font-semibold text-slate-300 block">Attendance Status</label>
-              <div className="flex gap-2">
-                {['Present', 'Late', 'Absent'].map((st) => (
-                  <button
-                    key={st}
-                    onClick={() => {
-                      handleToggleAttendance(scannedParticipant.id, st);
-                      setScannedParticipant((prev) => ({ ...prev, attendance: st }));
-                    }}
-                    className={`flex-1 py-2 rounded-xl text-xs font-semibold border transition-all ${
-                      scannedParticipant.attendance === st
-                        ? 'bg-emerald-600 text-white border-emerald-500 shadow-md'
-                        : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white'
-                    }`}
-                  >
-                    {st}
-                  </button>
-                ))}
-              </div>
-            </div>
+          {lastScanned ? (
+            lastScanned.success ? (
+              <div className="p-5 bg-emerald-950/40 rounded-2xl border border-emerald-500/30 space-y-4 animate-fade-in">
+                <div className="flex items-center gap-3 text-emerald-400">
+                  <CheckCircle className="w-6 h-6 shrink-0" />
+                  <div>
+                    <h4 className="font-bold text-white text-sm">Pass Verified Successfully!</h4>
+                    <p className="text-xs text-slate-400">Recorded at {lastScanned.time}</p>
+                  </div>
+                </div>
 
-            {/* Quick Award Points */}
-            <div className="space-y-3">
-              <label className="text-xs font-semibold text-slate-300 block">Award Points Score</label>
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  value={pointsInput}
-                  onChange={(e) => setPointsInput(Number(e.target.value))}
-                  className="w-24 bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white"
-                />
-                <button
-                  onClick={() => {
-                    handleUpdatePoints(scannedParticipant.id, pointsInput, `Awarded via QR Station`);
-                    setScannedParticipant((prev) => ({ ...prev, points: prev.points + pointsInput }));
-                  }}
-                  className="flex-1 bg-amber-500 hover:bg-amber-400 text-slate-950 rounded-xl text-xs font-bold transition-all"
-                >
-                  + Add Points
-                </button>
+                <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 space-y-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Participant Name:</span>
+                    <strong className="text-white">{lastScanned.participant.name}</strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">School & Team:</span>
+                    <span className="text-slate-200">{lastScanned.participant.school} ({lastScanned.participant.team})</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Assigned QR ID:</span>
+                    <span className="font-mono text-indigo-400">{lastScanned.participant.qrCode}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-400">Points Awarded:</span>
+                    <span className="text-emerald-400 font-bold">+10 pts (Check-in Bonus)</span>
+                  </div>
+                </div>
               </div>
+            ) : (
+              <div className="p-5 bg-rose-950/40 rounded-2xl border border-rose-500/30 space-y-3">
+                <div className="flex items-center gap-3 text-rose-400">
+                  <XCircle className="w-6 h-6 shrink-0" />
+                  <div>
+                    <h4 className="font-bold text-white text-sm">Pass Verification Failed</h4>
+                    <p className="text-xs text-slate-400">Attempted at {lastScanned.time}</p>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-300">
+                  No matching participant found for code <strong className="text-white">"{lastScanned.query}"</strong>. Please register the participant first or check the ID.
+                </p>
+              </div>
+            )
+          ) : (
+            <div className="p-12 text-center text-slate-500 flex flex-col items-center justify-center space-y-3 border border-dashed border-slate-800 rounded-2xl">
+              <QrCode className="w-12 h-12 opacity-30" />
+              <p className="text-xs">Scan a participant's QR code pass or enter an ID number to verify attendance and award check-in points instantly.</p>
             </div>
-          </div>
+          )}
         </div>
-      )}
+
+        <div className="p-4 bg-slate-900 rounded-xl border border-slate-800 text-xs text-slate-400">
+          <p className="font-semibold text-slate-300 mb-1">💡 Pro Scanning Tip</p>
+          Each successful scan automatically updates participant status to <strong>Present</strong> and awards 10 attendance points.
+        </div>
+      </div>
     </div>
   );
 }
@@ -1575,7 +1609,7 @@ function AuditLogsTab({ auditLogs, search, setSearch, categoryFilter, setCategor
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search audit details or user..."
+            placeholder="Search log details, user, action..."
             className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white outline-none focus:border-indigo-500"
           />
         </div>
@@ -1595,14 +1629,14 @@ function AuditLogsTab({ auditLogs, search, setSearch, categoryFilter, setCategor
 
           <button
             onClick={downloadLogsCSV}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800 rounded-xl text-xs font-semibold transition-all ml-auto"
+            className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs font-semibold border border-slate-700 transition-all ml-auto"
           >
             <Download className="w-4 h-4" /> Export CSV
           </button>
         </div>
       </div>
 
-      <div className="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden">
+      <div className="bg-slate-950 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-900/80 border-b border-slate-800 text-slate-400 font-semibold uppercase tracking-wider">
@@ -1611,23 +1645,31 @@ function AuditLogsTab({ auditLogs, search, setSearch, categoryFilter, setCategor
                 <th className="p-4">Category</th>
                 <th className="p-4">Action</th>
                 <th className="p-4">Details</th>
-                <th className="p-4">Operator</th>
+                <th className="p-4">Performed By</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/60">
-              {auditLogs.map((log) => (
-                <tr key={log.id} className="hover:bg-slate-900/40 transition-colors">
-                  <td className="p-4 font-mono text-slate-400">{log.timestamp}</td>
-                  <td className="p-4">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-slate-900 text-indigo-300 border border-slate-800">
-                      {log.category}
-                    </span>
+            <tbody className="divide-y divide-slate-800/60 font-mono">
+              {auditLogs.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="p-8 text-center text-slate-500 font-sans">
+                    No matching audit log entries found.
                   </td>
-                  <td className="p-4 font-bold text-white">{log.action}</td>
-                  <td className="p-4 text-slate-300 max-w-md">{log.details}</td>
-                  <td className="p-4 text-slate-400">{log.user}</td>
                 </tr>
-              ))}
+              ) : (
+                auditLogs.map((log) => (
+                  <tr key={log.id} className="hover:bg-slate-900/40 transition-colors">
+                    <td className="p-4 text-slate-400 text-[11px] whitespace-nowrap">{log.timestamp}</td>
+                    <td className="p-4">
+                      <span className="px-2 py-0.5 rounded-full bg-slate-900 text-indigo-300 border border-slate-800 text-[10px]">
+                        {log.category}
+                      </span>
+                    </td>
+                    <td className="p-4 font-bold text-slate-200">{log.action}</td>
+                    <td className="p-4 text-slate-300 font-sans">{log.details}</td>
+                    <td className="p-4 text-slate-400">{log.user}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -1643,84 +1685,149 @@ function ParticipantFormModal({ mode, initialData, modules, onClose, onSave }) {
       school: '',
       class: 'Grade 11',
       team: '',
-      qrCode: '',
-      points: 0,
+      qrCode: `EVT-2026-${Math.floor(200 + Math.random() * 700)}`,
       attendance: 'Present',
-      enrolledModules: []
+      points: 0,
+      enrolledModules: ['CS-101']
     }
   );
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!formData.name.trim() || !formData.school.trim()) return;
     onSave(formData);
+  };
+
+  const toggleModuleSelection = (code) => {
+    const current = formData.enrolledModules || [];
+    if (current.includes(code)) {
+      setFormData({ ...formData, enrolledModules: current.filter((c) => c !== code) });
+    } else {
+      setFormData({ ...formData, enrolledModules: [...current, code] });
+    }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl relative space-y-4">
-        <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-          <h3 className="font-bold text-white text-base">{mode === 'add' ? 'Enroll New Participant' : 'Edit Participant'}</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <UserPlus className="w-5 h-5 text-indigo-400" />
+            {mode === 'add' ? 'Enroll New Participant' : 'Edit Participant Profile'}
+          </h3>
+          <button onClick={onClose} className="text-slate-400 hover:text-white p-1">
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-3 text-xs">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="text-slate-400 block mb-1">Full Name</label>
+            <label className="block text-slate-400 font-medium mb-1">Full Name</label>
             <input
               type="text"
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
+              placeholder="e.g. Alexander Pierce"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-slate-400 block mb-1">School Name</label>
+              <label className="block text-slate-400 font-medium mb-1">School / Institution</label>
               <input
                 type="text"
                 required
                 value={formData.school}
                 onChange={(e) => setFormData({ ...formData, school: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
+                placeholder="e.g. Apex STEM Academy"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
               />
             </div>
             <div>
-              <label className="text-slate-400 block mb-1">Class / Grade</label>
+              <label className="block text-slate-400 font-medium mb-1">Class / Grade</label>
               <input
                 type="text"
                 value={formData.class}
                 onChange={(e) => setFormData({ ...formData, class: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
+                placeholder="e.g. Grade 11"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-slate-400 block mb-1">Team Name</label>
+              <label className="block text-slate-400 font-medium mb-1">Team Name</label>
               <input
                 type="text"
                 value={formData.team}
                 onChange={(e) => setFormData({ ...formData, team: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
+                placeholder="e.g. CyberKnights"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
               />
             </div>
             <div>
-              <label className="text-slate-400 block mb-1">Initial Points</label>
+              <label className="block text-slate-400 font-medium mb-1">Initial Points</label>
               <input
                 type="number"
                 value={formData.points}
-                onChange={(e) => setFormData({ ...formData, points: Number(e.target.value) })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
+                onChange={(e) => setFormData({ ...formData, points: e.target.value })}
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
               />
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-800 flex justify-end gap-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl">Cancel</button>
-            <button type="submit" className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-xl">Save Participant</button>
+          <div>
+            <label className="block text-slate-400 font-medium mb-1">Assigned QR Pass ID</label>
+            <input
+              type="text"
+              value={formData.qrCode}
+              onChange={(e) => setFormData({ ...formData, qrCode: e.target.value })}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 font-mono text-indigo-400 outline-none focus:border-indigo-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-slate-400 font-medium mb-2">Enrolled Modules & Competitions</label>
+            <div className="grid grid-cols-2 gap-2">
+              {modules.map((m) => {
+                const checked = formData.enrolledModules?.includes(m.code);
+                return (
+                  <button
+                    type="button"
+                    key={m.id}
+                    onClick={() => toggleModuleSelection(m.code)}
+                    className={`p-3 rounded-xl border text-left flex items-center justify-between transition-all ${checked ? 'bg-indigo-600/10 border-indigo-500/40 text-white' : 'bg-slate-950 border-slate-800 text-slate-400'}`}
+                  >
+                    <div>
+                      <span className="font-bold block text-xs">{m.code}</span>
+                      <span className="text-[10px] opacity-80 truncate block">{m.name}</span>
+                    </div>
+                    <div className={`w-4 h-4 rounded-md border flex items-center justify-center ${checked ? 'bg-indigo-600 border-indigo-500 text-white' : 'border-slate-700'}`}>
+                      {checked && <Check className="w-3 h-3" />}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-xl font-semibold"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-2 text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl font-semibold shadow-lg shadow-indigo-600/30"
+            >
+              {mode === 'add' ? 'Save & Enroll' : 'Save Changes'}
+            </button>
           </div>
         </form>
       </div>
@@ -1728,60 +1835,69 @@ function ParticipantFormModal({ mode, initialData, modules, onClose, onSave }) {
   );
 }
 
-function AdminFormModal({ mode, initialData, onClose, onSave }) {
+function AdminFormModal({ mode, initialData, modules, onClose, onSave }) {
   const [formData, setFormData] = useState(
     initialData || {
       name: '',
       email: '',
-      role: 'Scoring Official',
-      assignedVenue: 'Main Hall',
-      status: 'Active'
+      role: 'Module Leader',
+      assignedVenue: 'Main Gymnasium',
+      status: 'Active',
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150'
     }
   );
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!formData.name.trim() || !formData.email.trim()) return;
     onSave(formData);
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
-        <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-          <h3 className="font-bold text-white text-base">{mode === 'add' ? 'Add Staff / Admin' : 'Edit Admin Profile'}</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <Shield className="w-5 h-5 text-indigo-400" />
+            {mode === 'add' ? 'Add Admin User' : 'Edit Admin Profile'}
+          </h3>
+          <button onClick={onClose} className="text-slate-400 hover:text-white p-1">
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-3 text-xs">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="text-slate-400 block mb-1">Full Name</label>
+            <label className="block text-slate-400 font-medium mb-1">Full Name</label>
             <input
               type="text"
               required
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
+              placeholder="e.g. Dr. Jonathan Crane"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
             />
           </div>
 
           <div>
-            <label className="text-slate-400 block mb-1">Email Address</label>
+            <label className="block text-slate-400 font-medium mb-1">Email Address</label>
             <input
               type="email"
               required
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
+              placeholder="e.g. jonathan.c@eventhub.edu"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-slate-400 block mb-1">Role</label>
+              <label className="block text-slate-400 font-medium mb-1">Admin Role</label>
               <select
                 value={formData.role}
                 onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
+                className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500"
               >
                 <option value="Super Admin">Super Admin</option>
                 <option value="Module Leader">Module Leader</option>
@@ -1790,19 +1906,43 @@ function AdminFormModal({ mode, initialData, onClose, onSave }) {
               </select>
             </div>
             <div>
-              <label className="text-slate-400 block mb-1">Assigned Venue</label>
-              <input
-                type="text"
-                value={formData.assignedVenue}
-                onChange={(e) => setFormData({ ...formData, assignedVenue: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
-              />
+              <label className="block text-slate-400 font-medium mb-1">Status</label>
+              <select
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500"
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
             </div>
           </div>
 
-          <div className="pt-3 border-t border-slate-800 flex justify-end gap-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl">Cancel</button>
-            <button type="submit" className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-xl">Save Admin Account</button>
+          <div>
+            <label className="block text-slate-400 font-medium mb-1">Assigned Venue</label>
+            <input
+              type="text"
+              value={formData.assignedVenue}
+              onChange={(e) => setFormData({ ...formData, assignedVenue: e.target.value })}
+              placeholder="e.g. Lab 3, Tech Wing"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
+            />
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-xl font-semibold"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-2 text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl font-semibold shadow-lg shadow-indigo-600/30"
+            >
+              {mode === 'add' ? 'Create Account' : 'Save Changes'}
+            </button>
           </div>
         </form>
       </div>
@@ -1810,15 +1950,15 @@ function AdminFormModal({ mode, initialData, onClose, onSave }) {
   );
 }
 
-function ModuleFormModal({ mode, initialData, onClose, onSave }) {
+function ModuleFormModal({ mode, initialData, admins, onClose, onSave }) {
   const [formData, setFormData] = useState(
     initialData || {
-      code: 'CS-200',
+      code: 'CS-105',
       name: '',
-      venue: 'Lab 1',
+      venue: 'Innovation Hall A',
       maxPoints: 100,
-      coordinator: 'Dr. Turing',
-      schedule: '10:00 AM - 12:00 PM',
+      coordinator: admins[0]?.name || 'Dr. Alan Turing',
+      schedule: '02:00 PM - 04:00 PM',
       description: '',
       status: 'Active'
     }
@@ -1826,86 +1966,121 @@ function ModuleFormModal({ mode, initialData, onClose, onSave }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!formData.name.trim() || !formData.code.trim()) return;
     onSave(formData);
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4">
-        <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-          <h3 className="font-bold text-white text-base">{mode === 'add' ? 'Create Competition Module' : 'Edit Module Details'}</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-indigo-400" />
+            {mode === 'add' ? 'Create Competition Module' : 'Edit Module Parameters'}
+          </h3>
+          <button onClick={onClose} className="text-slate-400 hover:text-white p-1">
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-3 text-xs">
-          <div className="grid grid-cols-2 gap-3">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+          <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="text-slate-400 block mb-1">Module Code</label>
+              <label className="block text-slate-400 font-medium mb-1">Module Code</label>
               <input
                 type="text"
                 required
                 value={formData.code}
                 onChange={(e) => setFormData({ ...formData, code: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
+                placeholder="e.g. CS-102"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500 font-mono"
               />
             </div>
-            <div>
-              <label className="text-slate-400 block mb-1">Max Score Points</label>
+            <div className="col-span-2">
+              <label className="block text-slate-400 font-medium mb-1">Module Name</label>
               <input
-                type="number"
+                type="text"
                 required
-                value={formData.maxPoints}
-                onChange={(e) => setFormData({ ...formData, maxPoints: Number(e.target.value) })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="e.g. AI Speed Coding"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
               />
             </div>
           </div>
 
-          <div>
-            <label className="text-slate-400 block mb-1">Module Name</label>
-            <input
-              type="text"
-              required
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-slate-400 block mb-1">Venue</label>
+              <label className="block text-slate-400 font-medium mb-1">Venue Location</label>
               <input
                 type="text"
                 value={formData.venue}
                 onChange={(e) => setFormData({ ...formData, venue: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
+                placeholder="e.g. Lab 3"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
               />
             </div>
             <div>
-              <label className="text-slate-400 block mb-1">Schedule</label>
+              <label className="block text-slate-400 font-medium mb-1">Max Score Points</label>
+              <input
+                type="number"
+                value={formData.maxPoints}
+                onChange={(e) => setFormData({ ...formData, maxPoints: e.target.value })}
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-slate-400 font-medium mb-1">Schedule Time</label>
               <input
                 type="text"
                 value={formData.schedule}
                 onChange={(e) => setFormData({ ...formData, schedule: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
+                placeholder="e.g. 10:00 AM - 12:00 PM"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
               />
+            </div>
+            <div>
+              <label className="block text-slate-400 font-medium mb-1">Status</label>
+              <select
+                value={formData.status}
+                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+                className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500"
+              >
+                <option value="Active">Active</option>
+                <option value="Upcoming">Upcoming</option>
+                <option value="Completed">Completed</option>
+              </select>
             </div>
           </div>
 
           <div>
-            <label className="text-slate-400 block mb-1">Description</label>
+            <label className="block text-slate-400 font-medium mb-1">Description</label>
             <textarea
               rows="2"
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
-            />
+              placeholder="Brief summary of the competition module..."
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
+            ></textarea>
           </div>
 
-          <div className="pt-3 border-t border-slate-800 flex justify-end gap-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl">Cancel</button>
-            <button type="submit" className="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-xl">Save Module</button>
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-xl font-semibold"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-2 text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl font-semibold shadow-lg shadow-indigo-600/30"
+            >
+              {mode === 'add' ? 'Create Module' : 'Save Changes'}
+            </button>
           </div>
         </form>
       </div>
@@ -1914,65 +2089,71 @@ function ModuleFormModal({ mode, initialData, onClose, onSave }) {
 }
 
 function AdjustPointsModal({ participant, onClose, onUpdate }) {
-  const [delta, setDelta] = useState(10);
-  const [reason, setReason] = useState('Round 1 Score');
+  const [amount, setAmount] = useState(10);
+  const [reason, setReason] = useState('Round 1 Bonus Score');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onUpdate(participant.id, Number(amount), reason);
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4">
-        <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-          <h3 className="font-bold text-white text-base">Adjust Participant Score</h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-base font-bold text-white flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-amber-400" /> Adjust Score
+          </h3>
+          <button onClick={onClose} className="text-slate-400 hover:text-white">
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        <div className="text-xs space-y-3">
-          <div className="bg-slate-950 p-3 rounded-xl border border-slate-800">
-            <p className="font-bold text-white text-sm">{participant.name}</p>
-            <p className="text-slate-400">{participant.school} • Current: <strong className="text-amber-400">{participant.points} pts</strong></p>
-          </div>
+        <p className="text-xs text-slate-300 mb-4">
+          Updating points for <strong className="text-white">{participant.name}</strong> (Current: {participant.points} pts).
+        </p>
 
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="text-slate-400 block mb-1">Quick Add Preset</label>
-            <div className="flex gap-2">
-              {[5, 10, 25, 50, -10].map((val) => (
-                <button
-                  key={val}
-                  type="button"
-                  onClick={() => setDelta(val)}
-                  className={`flex-1 py-1.5 rounded-lg border text-xs font-semibold ${
-                    delta === val ? 'bg-amber-500 text-slate-950 border-amber-400' : 'bg-slate-950 text-slate-300 border-slate-800'
-                  }`}
-                >
-                  {val > 0 ? `+${val}` : val}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label className="text-slate-400 block mb-1">Reason / Event Round</label>
+            <label className="block text-slate-400 font-medium mb-1">Points to Add / Deduct (+/-)</label>
             <input
-              type="text"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white outline-none focus:border-indigo-500"
+              type="number"
+              required
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white font-bold outline-none focus:border-indigo-500"
             />
           </div>
 
-          <div className="pt-3 border-t border-slate-800 flex justify-end gap-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl">Cancel</button>
+          <div>
+            <label className="block text-slate-400 font-medium mb-1">Reason / Achievement</label>
+            <input
+              type="text"
+              required
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="e.g. 1st Place Code Sprint"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
+            />
+          </div>
+
+          <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"
-              onClick={() => {
-                onUpdate(participant.id, delta, reason);
-                onClose();
-              }}
-              className="px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl"
+              onClick={onClose}
+              className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl font-semibold"
             >
-              Confirm Score Change
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-semibold shadow-lg shadow-amber-600/30"
+            >
+              Confirm Score
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
@@ -1981,32 +2162,36 @@ function AdjustPointsModal({ participant, onClose, onUpdate }) {
 function QRCardModal({ participant, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-sm w-full shadow-2xl relative text-center space-y-4">
-        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white"><X className="w-5 h-5" /></button>
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative flex flex-col items-center text-center space-y-4">
+        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white">
+          <X className="w-5 h-5" />
+        </button>
 
         <span className="px-3 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 rounded-full text-xs font-semibold">
-          Digital Event Badge
+          Official Access Badge
         </span>
+
+        <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center text-2xl font-bold text-white shadow-lg">
+          {participant.name.charAt(0)}
+        </div>
 
         <div>
           <h3 className="text-lg font-bold text-white">{participant.name}</h3>
-          <p className="text-xs text-slate-400">{participant.school}</p>
+          <p className="text-xs text-slate-400">{participant.school} • {participant.class}</p>
+          <p className="text-xs text-indigo-400 font-medium mt-0.5">{participant.team}</p>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl inline-block shadow-lg">
-          <QrCode className="w-36 h-36 text-slate-900 mx-auto" />
+        <div className="bg-white p-4 rounded-xl shadow-md">
+          <QrCode className="w-32 h-32 text-slate-900" />
         </div>
 
-        <p className="font-mono text-xs text-indigo-300 tracking-widest">{participant.qrCode}</p>
+        <span className="font-mono text-xs text-slate-400 tracking-widest">{participant.qrCode}</span>
 
         <button
-          onClick={() => {
-            alert(`Pass badge printed for ${participant.name}`);
-            onClose();
-          }}
-          className="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-indigo-600/30"
+          onClick={onClose}
+          className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all"
         >
-          Print / Download Pass
+          Close Pass Window
         </button>
       </div>
     </div>
