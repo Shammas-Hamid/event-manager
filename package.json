@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "html5-qrcode": "^2.3.8",
+    "lucide-react": "^1.51.0",
+    "qrcode.react": "^4.2.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.6.1",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3"
+  }
+}
