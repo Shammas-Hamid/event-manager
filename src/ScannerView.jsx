@@ -1,8 +1,44 @@
 import { useEffect, useState } from 'react';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebaseConfig';
+import { db } from './firebaseConfig';
 
+export default function QRScannerTab({ processCode, selectedModule }) {
+  useEffect(() => {
+    // Initialize scanner with 10 FPS and a 250x250 scanning box
+    const scanner = new Html5QrcodeScanner('qr-reader-container', {
+      fps: 10,
+      qrbox: { width: 250, height: 250 },
+      rememberLastUsedCamera: true,
+    });
+
+    scanner.render(
+      (decodedText) => {
+        // Pass decoded text directly into your attendance processor
+        processCode(decodedText);
+      },
+      (error) => {
+        // Optional scan frame parsing errors
+      }
+    );
+
+    // Clean up media stream when component unmounts or tab switches
+    return () => {
+      scanner.clear().catch((err) => console.error("Failed to clear scanner:", err));
+    };
+  }, [selectedModule]);
+
+  return (
+    <div className="flex flex-col items-center justify-center p-4">
+      <h3 className="text-lg font-semibold mb-2">
+        Scanning for Module: <span className="text-blue-600">{selectedModule}</span>
+      </h3>
+      
+      {/* Target container for camera stream */}
+      <div id="qr-reader-container" className="w-full max-w-md overflow-hidden rounded-lg shadow-lg"></div>
+    </div>
+  );
+}
 export default function ScannerView() {
   const [participant, setParticipant] = useState(null);
   const [error, setError] = useState('');
