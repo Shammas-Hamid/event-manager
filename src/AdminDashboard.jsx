@@ -2262,7 +2262,7 @@ function ModuleFormModal({ mode, initialData, admins = [], onClose, onSave }) {
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="e.g. AI Speed Coding"
+                placeholder="e.g. Code Sprint Hackathon"
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
               />
             </div>
@@ -2281,10 +2281,9 @@ function ModuleFormModal({ mode, initialData, admins = [], onClose, onSave }) {
               />
             </div>
             <div>
-              <label className="block text-slate-400 font-medium mb-1">Max Points</label>
+              <label className="block text-slate-400 font-medium mb-1">Max Points Possible</label>
               <input
                 type="number"
-                required
                 value={formData.maxPoints}
                 onChange={(e) => setFormData({ ...formData, maxPoints: e.target.value })}
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
@@ -2294,7 +2293,17 @@ function ModuleFormModal({ mode, initialData, admins = [], onClose, onSave }) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-slate-400 font-medium mb-1">Schedule / Time</label>
+              <label className="block text-slate-400 font-medium mb-1">Coordinator / Official</label>
+              <input
+                type="text"
+                value={formData.coordinator}
+                onChange={(e) => setFormData({ ...formData, coordinator: e.target.value })}
+                placeholder="e.g. Dr. Alan Turing"
+                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
+              />
+            </div>
+            <div>
+              <label className="block text-slate-400 font-medium mb-1">Schedule / Time Window</label>
               <input
                 type="text"
                 value={formData.schedule}
@@ -2303,38 +2312,28 @@ function ModuleFormModal({ mode, initialData, admins = [], onClose, onSave }) {
                 className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
               />
             </div>
-            <div>
-              <label className="block text-slate-400 font-medium mb-1">Status</label>
-              <select
-                value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500"
-              >
-                <option value="Active">Active</option>
-                <option value="Upcoming">Upcoming</option>
-                <option value="Completed">Completed</option>
-              </select>
-            </div>
           </div>
 
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Coordinator Name</label>
-            <input
-              type="text"
-              value={formData.coordinator}
-              onChange={(e) => setFormData({ ...formData, coordinator: e.target.value })}
-              placeholder="e.g. Dr. Alan Turing"
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
-            />
+            <label className="block text-slate-400 font-medium mb-1">Status</label>
+            <select
+              value={formData.status}
+              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+              className="w-full bg-slate-950 border border-slate-800 text-white rounded-xl px-3 py-2.5 outline-none focus:border-indigo-500"
+            >
+              <option value="Active">Active</option>
+              <option value="Upcoming">Upcoming</option>
+              <option value="Completed">Completed</option>
+            </select>
           </div>
 
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Description</label>
+            <label className="block text-slate-400 font-medium mb-1">Module Description</label>
             <textarea
-              rows="3"
+              rows={3}
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Brief description of the competition module..."
+              placeholder="Brief description of rules, requirements, or format..."
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500 resize-none"
             />
           </div>
@@ -2351,7 +2350,7 @@ function ModuleFormModal({ mode, initialData, admins = [], onClose, onSave }) {
               type="submit"
               className="px-5 py-2 text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl font-semibold shadow-lg shadow-indigo-600/30"
             >
-              {mode === 'add' ? 'Create Module' : 'Save Changes'}
+              {mode === 'add' ? 'Create Module' : 'Save Parameters'}
             </button>
           </div>
         </form>
@@ -2362,9 +2361,9 @@ function ModuleFormModal({ mode, initialData, admins = [], onClose, onSave }) {
 
 function AdjustPointsModal({ participant, onClose, onUpdate }) {
   const [pointsToAdd, setPointsToAdd] = useState(10);
-  const [reason, setReason] = useState('Module Performance');
+  const [reason, setReason] = useState('Competition Bonus');
 
-  const handleApply = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     onUpdate(participant.id, Number(pointsToAdd), reason);
     onClose();
@@ -2372,57 +2371,80 @@ function AdjustPointsModal({ participant, onClose, onUpdate }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative space-y-4">
-        <div className="flex justify-between items-center">
-          <h3 className="text-base font-bold text-white flex items-center gap-2">
-            <Trophy className="w-5 h-5 text-amber-400" /> Adjust Participant Points
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative">
+        <div className="flex justify-between items-center mb-6">
+          <h3 className="text-lg font-bold text-white flex items-center gap-2">
+            <Trophy className="w-5 h-5 text-amber-400" /> Adjust Points Score
           </h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-white">
+          <button onClick={onClose} className="text-slate-400 hover:text-white p-1">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs">
-          <p className="font-bold text-white">{participant.name}</p>
-          <p className="text-slate-400">{participant.school} • Current: <strong className="text-emerald-400">{participant.points} pts</strong></p>
+        <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 mb-4 flex justify-between items-center text-xs">
+          <div>
+            <span className="font-bold text-white text-sm block">{participant.name}</span>
+            <span className="text-slate-400">{participant.school} • {participant.team}</span>
+          </div>
+          <div className="text-right">
+            <span className="text-[10px] text-slate-500 uppercase font-semibold block">Current Score</span>
+            <span className="text-base font-bold text-emerald-400">{participant.points} pts</span>
+          </div>
         </div>
 
-        <form onSubmit={handleApply} className="space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Points Adjustment (positive or negative)</label>
+            <label className="block text-slate-400 font-medium mb-1">Points Adjustment (+ or -)</label>
             <input
               type="number"
               required
               value={pointsToAdd}
               onChange={(e) => setPointsToAdd(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-amber-500 font-bold"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white font-bold text-sm outline-none focus:border-indigo-500"
             />
           </div>
 
+          <div className="flex gap-2">
+            {[5, 10, 25, 50, -5, -10].map((val) => (
+              <button
+                key={val}
+                type="button"
+                onClick={() => setPointsToAdd(val)}
+                className={`px-2.5 py-1 rounded-lg border text-xs font-semibold ${
+                  val > 0
+                    ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/20'
+                    : 'bg-rose-500/10 text-rose-400 border-rose-500/30 hover:bg-rose-500/20'
+                }`}
+              >
+                {val > 0 ? `+${val}` : val}
+              </button>
+            ))}
+          </div>
+
           <div>
-            <label className="block text-slate-400 font-medium mb-1">Reason / Note</label>
+            <label className="block text-slate-400 font-medium mb-1">Reason / Event Note</label>
             <input
               type="text"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="e.g. 1st place in Code Sprint"
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-amber-500"
+              placeholder="e.g. Round 1 Speed Winner"
+              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white outline-none focus:border-indigo-500"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-slate-800 text-slate-300 rounded-xl text-xs font-semibold"
+              className="px-4 py-2 text-slate-300 bg-slate-800 hover:bg-slate-700 rounded-xl font-semibold"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-amber-600/30"
+              className="px-5 py-2 text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl font-semibold shadow-lg shadow-indigo-600/30"
             >
-              Update Score
+              Apply Score
             </button>
           </div>
         </form>
@@ -2434,39 +2456,55 @@ function AdjustPointsModal({ participant, onClose, onUpdate }) {
 function QRCardModal({ participant, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative space-y-4 flex flex-col items-center text-center">
-        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white">
+      <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl relative flex flex-col items-center text-center">
+        <button onClick={onClose} className="absolute top-4 right-4 text-slate-400 hover:text-white p-1">
           <X className="w-5 h-5" />
         </button>
 
-        <span className="px-3 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 rounded-full text-[10px] font-bold uppercase tracking-wider">
-          EventHub Official Participant Pass
-        </span>
+        <div className="p-2.5 bg-indigo-500/10 text-indigo-400 rounded-xl border border-indigo-500/20 mb-3">
+          <QrCode className="w-6 h-6" />
+        </div>
 
-        <div className="p-4 bg-white rounded-2xl shadow-xl border border-slate-200 mt-2">
+        <h3 className="text-base font-bold text-white">Event Identification Pass</h3>
+        <p className="text-xs text-slate-400 mt-0.5">{participant.school}</p>
+
+        <div className="p-4 bg-white rounded-2xl shadow-xl my-4 border border-slate-700">
           <QRCode
-            value={participant.qrCode || participant.id}
+            value={participant.qrCode || participant.id || 'EVT-2026-000'}
             size={160}
             style={{ height: "auto", maxWidth: "100%", width: "100%" }}
             viewBox={`0 0 256 256`}
           />
         </div>
 
-        <div>
-          <h3 className="text-lg font-bold text-white">{participant.name}</h3>
-          <p className="text-xs text-indigo-400 font-medium">{participant.team}</p>
-          <p className="text-xs text-slate-400 mt-0.5">{participant.school} ({participant.class})</p>
-          <p className="text-xs font-mono text-emerald-400 mt-2 font-semibold">QR Code: {participant.qrCode}</p>
+        <span className="font-mono text-sm text-indigo-400 font-bold tracking-wider mb-2">
+          {participant.qrCode || participant.id}
+        </span>
+
+        <div className="w-full bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs space-y-1 my-2 text-left">
+          <div className="flex justify-between">
+            <span className="text-slate-400">Name:</span>
+            <span className="font-semibold text-white">{participant.name}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-400">Team:</span>
+            <span className="text-indigo-300">{participant.team}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-slate-400">Class:</span>
+            <span className="text-slate-300">{participant.class}</span>
+          </div>
         </div>
 
         <button
-          onClick={() => window.print()}
-          className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2"
+          onClick={onClose}
+          className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold shadow-lg shadow-indigo-600/30 transition-all mt-2"
         >
-          <Download className="w-4 h-4" /> Print / Save Pass
+          Close Pass
         </button>
       </div>
     </div>
   );
 }
+
 export default AdminDashboard;
